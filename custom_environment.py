@@ -15,17 +15,32 @@ class CustomLanguageTable(language_table.LanguageTable):
             obstacles.append(obstacle)
         return obstacles
 
+    def _generate_blocks(self):
+        blocks = []
+        for _ in range(5):  # For example, create 5 blocks
+            block = {
+                'color': random.choice(["rojo", "azul", "verde", "amarillo"]),
+                'position': [random.randint(0, 4), random.randint(0, 4)]
+            }
+            blocks.append(block)
+        return blocks
+
     def reset(self):
         state = super().reset()
+        print(f"Initial state from super().reset(): {state}")  # Debug statement
+
         self.obstacles = self._generate_obstacles()  # Initialize obstacles
         state['obstacles'] = self.obstacles  # Add obstacles to the state
-        if 'blocks' not in state:
-            state['blocks'] = []
+
+        self.blocks = self._generate_blocks()  # Initialize blocks
+        state['blocks'] = self.blocks  # Add blocks to the state
+
+        print(f"State after adding obstacles and blocks: {state}")  # Debug statement
         return state
 
     def step(self, action):
         state, reward, done, info = super().step(action)
         state['obstacles'] = self.obstacles  # Ensure obstacles are included in each step
-        if 'blocks' not in state:
-            state['blocks'] = []
+        state['blocks'] = self.blocks  # Ensure blocks are included in each step
+
         return state, reward, done, info
