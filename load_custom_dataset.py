@@ -19,7 +19,7 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
                     'block_positions': item['observation']['block_positions'],
                     'block_colors': item['observation']['block_colors'],
                     'obstacle_positions': item['observation']['obstacle_positions'],
-                    'rgb': tf.convert_to_tensor(item['observation']['rgb'], dtype=tf.uint8)
+                    'rgb': [tf.convert_to_tensor(frame, dtype=tf.uint8) for frame in item['observation']['rgb']]  # Convert each frame to tensor
                 }
             }
 
@@ -35,7 +35,7 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
             'block_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
             'block_colors': tf.TensorSpec(shape=(None,), dtype=tf.string),
             'obstacle_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
-            'rgb': tf.TensorSpec(shape=(444, 640, 3), dtype=tf.uint8)  # Adjust shape to match your image dimensions
+            'rgb': tf.TensorSpec(shape=(None, 444, 640, 3), dtype=tf.uint8)  # Add sequence length dimension
         }
     }
 

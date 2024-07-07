@@ -16,7 +16,7 @@ def generate_observation(initial_state, rgb_image):
         "block_positions": [block['position'] for block in initial_state['blocks']],
         "block_colors": [block['color'] for block in initial_state['blocks']],
         "obstacle_positions": [obstacle['position'] for obstacle in initial_state['obstacles']],
-        "rgb": rgb_image.tolist()  # Include RGB image as part of observation
+        "rgb": [rgb_image.tolist()]  # Wrap rgb_image in a list to create a sequence
     }
     return observation
 
