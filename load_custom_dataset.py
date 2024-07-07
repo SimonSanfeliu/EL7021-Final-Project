@@ -15,8 +15,12 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
                 'target_block_colors': [block['color'] for block in item['target_state']['blocks']],
                 'target_block_positions': [block['position'] for block in item['target_state']['blocks']],
                 'action': item['action'],
-                'observation': item['observation'],
-                'rgb_image': tf.convert_to_tensor(item['rgb_image'], dtype=tf.uint8)  # Convert back to tensor
+                'observation': {
+                    'block_positions': item['observation']['block_positions'],
+                    'block_colors': item['observation']['block_colors'],
+                    'obstacle_positions': item['observation']['obstacle_positions'],
+                    'rgb': tf.convert_to_tensor(item['observation']['rgb'], dtype=tf.uint8)
+                }
             }
 
     output_signature = {
@@ -30,9 +34,9 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
         'observation': {
             'block_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
             'block_colors': tf.TensorSpec(shape=(None,), dtype=tf.string),
-            'obstacle_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32)
-        },
-        'rgb': tf.TensorSpec(shape=(None, None, 3), dtype=tf.uint8)  # Adjust shape as necessary
+            'obstacle_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
+            'rgb': tf.TensorSpec(shape=(444, 640, 3), dtype=tf.uint8)  # Adjust shape to match your image dimensions
+        }
     }
 
     dataset = tf.data.Dataset.from_generator(
