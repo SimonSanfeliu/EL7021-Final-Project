@@ -19,7 +19,7 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
                     'block_positions': item['observation']['block_positions'],
                     'block_colors': item['observation']['block_colors'],
                     'obstacle_positions': item['observation']['obstacle_positions'],
-                    'rgb': [tf.convert_to_tensor(frame, dtype=tf.uint8) for frame in item['observation']['rgb']]  # Convert each frame to tensor
+                    'rgb': [tf.convert_to_tensor(frame, dtype=tf.uint8) for frame in item['observation']['rgb']]
                 }
             }
 
@@ -35,7 +35,7 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
             'block_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
             'block_colors': tf.TensorSpec(shape=(None,), dtype=tf.string),
             'obstacle_positions': tf.TensorSpec(shape=(None, 2), dtype=tf.int32),
-            'rgb': tf.TensorSpec(shape=(None, 444, 640, 3), dtype=tf.uint8)  # Add sequence length dimension
+            'rgb': tf.TensorSpec(shape=(None, 444, 640, 3), dtype=tf.uint8)
         }
     }
 
@@ -44,5 +44,6 @@ def load_custom_dataset(dataset_path, batch_size, shuffle_buffer_size=10000):
         output_signature=output_signature
     )
 
+    dataset = dataset.cache()  # Cache data to reduce loading time
     dataset = dataset.shuffle(shuffle_buffer_size).batch(batch_size).prefetch(tf.data.AUTOTUNE)
     return dataset
